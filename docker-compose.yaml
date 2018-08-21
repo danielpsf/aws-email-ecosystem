@@ -1,0 +1,13 @@
+version: '3'
+services:
+  localstack:
+    image: localstack/localstack
+    container_name: localstack
+    ports:
+      - 4579:4579
+    environment:
+      - SERVICES=ses, sns, lambda, s3
+      - DEFAULT_REGION=us-west-2
+      - PORT_WEB_UI=8080
+      - LAMBDA_EXECUTOR=docker
+      - DATA_DIR=/tmp/localstack/data
