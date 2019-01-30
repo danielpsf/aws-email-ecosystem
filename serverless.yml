@@ -1,0 +1,37 @@
+service: serverless-golang-101
+
+frameworkVersion: ">=1.28.0 <2.0.0"
+
+provider:
+  name: aws
+  stackName: dfernandes-serverless-101
+  deploymentBucket: ${cf:dfernandes-serverless-101.deploymentBucket}
+  region: ${opt:region}
+  runtime: go1.x
+  memorySize: 128
+  timeout: 5
+
+package:
+ exclude:
+   - ./**
+ include:
+   - ./bin/**
+
+functions:
+  sqs-consumer:
+    handler: bin/sqs-consumer
+    reservedConcurrency: 10
+    events:
+      - sqs: ${cf:dfernandes-serverless-101.queueArn}
+    tags:
+      owner: dfernandes
+    environment:
+      POTATO: potato
+    role: ${cf:dfernandes-serverless-101.iamArn}
+
+resources:
+ Outputs:
+    FunctionARN:
+      Description: "Function ARN"
+      Value:
+        Ref: sqs-consumerLambdaFunctionArn
